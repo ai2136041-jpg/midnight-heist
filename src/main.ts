@@ -401,14 +401,14 @@ async function boot(): Promise<void> {
     disposeAllSkeletonViewers()
     const started = save.data.started
     const pending = pendingCount()
-    const studied = save.data.studiedBones.length
+    const bones = save.data.bones.length
     const fossils = collectedFossilCount(save.data.fossils)
     const hasMuseum = save.data.bones.length > 0 || save.data.book.length > 0 || save.data.completed
     ui.innerHTML = `<div class="screen"><div class="panel">
       <h1 class="title">${i18n.t('title')}</h1>
       <p class="subtitle">${i18n.t('subtitle')}</p>
       <div class="title-progress">
-        <span>${i18n.t('bonesProgress', { n: studied, total: BONE_COUNT })}</span>
+        <span>${i18n.t('bonesProgress', { n: bones, total: BONE_COUNT })}</span>
         <span>${i18n.t('fossilsProgress', { n: fossils, total: FOSSILS.length })}</span>
       </div>
       ${save.data.completed ? `<p class="complete-badge">${i18n.t('campaignComplete')}</p>` : ''}
@@ -761,7 +761,7 @@ async function boot(): Promise<void> {
   const museumMarkup = (): string => {
     const pending = pendingSpecimens()
     const allDone = pending.bones.length + pending.fossils.length === 0
-    const studied = save.data.studiedBones.length
+    const bonesFound = save.data.bones.length
     const collected = collectedFossilCount(save.data.fossils)
     const studiedFossils = FOSSIL_IDS.filter(id => (save.data.studiedFossils[id] ?? 0) > 0).length
     const cabinet = FOSSILS.map(f => {
@@ -789,7 +789,7 @@ async function boot(): Promise<void> {
           <p class="museum-sub">${i18n.t('museumSub')}</p>
         </div>
         <div class="museum-progress">
-          <span class="progress-pill"><b>${studied}/${BONE_COUNT}</b> ${i18n.t('bones')}</span>
+          <span class="progress-pill"><b>${bonesFound}/${BONE_COUNT}</b> ${i18n.t('bones')}</span>
           <span class="progress-pill"><b>${collected}/${FOSSILS.length}</b> ${i18n.t('fossils')}</span>
           <span class="progress-pill"><b>${studiedFossils}/${FOSSILS.length}</b> ${i18n.t('studied')}</span>
         </div>
@@ -800,8 +800,8 @@ async function boot(): Promise<void> {
       ${banner}
       <main class="museum-main">
         <section class="museum-hall">
-          <div class="hall-head"><div><h2>${i18n.t('boneHall')}</h2><p>${i18n.t('boneHallSub')}</p></div><span class="hall-count">${studied}/${BONE_COUNT}</span></div>
-n          <p class="small footer-hint">${i18n.t('mountHint')}</p>
+          <div class="hall-head"><div><h2>${i18n.t('boneHall')}</h2><p>${i18n.t('boneHallSub')}</p></div><span class="hall-count">${bonesFound}/${BONE_COUNT}</span></div>
+          <p class="small footer-hint">${i18n.t('mountHint')}</p>
 
           <div class="bone-legend">${BONE_PARTS.map((b, i) => `<span class="${save.data.bones.includes(i) ? 'on' : ''}">${save.data.bones.includes(i) ? '🦴' : '·'} ${tx(b.name)}</span>`).join('')}</div>
           <div class="hall-head fossil-head"><div><h2>${i18n.t('fossilCabinet')}</h2><p>${i18n.t('fossilCabinetSub')}</p></div><span class="hall-count">${collected}/${FOSSILS.length}</span></div>
