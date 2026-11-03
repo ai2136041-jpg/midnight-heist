@@ -1,0 +1,54 @@
+Fix and rebuild the HIDING SYSTEM and GADGET SYSTEM in the game. Do not change other working features. Current bugs: (1) the player cannot choose when to hide, (2) once hidden the player cannot get out, (3) gadgets have no working selection/use controls. Implement exactly the following.
+
+## HIDING SYSTEM (explicit, player-controlled)
+State machine: FREE -> ENTERING -> HIDDEN -> EXITING -> FREE.
+- Hiding must NEVER trigger automatically. Walking near or into a hiding spot does nothing except highlight it and show a prompt "E: Hide" (mobile: a "Hide" button appears).
+- ENTER: pressing E / the Hide button while within interaction range starts a 0.4s enter animation, then the player is HIDDEN.
+- EXIT (must always work, three ways):
+  1. Press E again (prompt "E: Leave" is always visible on screen while hidden; mobile: always-visible "Leave" button).
+  2. Push a movement key / joystick for 0.3s.
+  3. Esc / pause menu has a "Leave hiding spot" safety button.
+- On exit, move the player to a predefined safe exit point in front of the hiding spot (no wall/object collision) and restore full input, collision, and visibility. The player must never get stuck.
+- Add a 0.5s cooldown between enter/exit so one key press cannot toggle twice.
+- Input must stay active while hidden (only movement is locked, not interaction). Make sure no input lock remains after exit.
+- Cannot enter a hiding spot if a guard is in CHASE state and currently sees the player. Show a message: "The guard is watching you!". If the guard lost the player (SEARCH state), hiding is allowed.
+- While HIDDEN: noise = 0, guards cannot detect the player, camera gets a light vignette, heartbeat sound when a guard is within range.
+- Give the player information to decide when to leave: while hidden, show edge-of-screen arrows for each guard and a safety light on the HUD: green = no guard nearby, yellow = guard nearby, red = guard is heading to this hiding spot.
+- Late levels (4+): a guard may walk to check a hiding spot near the last noise. Show a warning (red light, heartbeat, a "Guard is coming!" text) with at least 1.5 seconds to react, so the player can leave and run. If the player stays and the guard checks the spot, the player is caught.
+- Allow using Coin Throw and Noise Maker from inside a hiding spot (to lure the guard away) without revealing the player.
+- Hiding spots: locker, curtain, under table, dark corner, vent. Only 1 player per spot. Each has a distinct highlight outline and enter/exit animation.
+
+## GADGET SYSTEM (clear selection and use)
+- Gadget bar on the HUD with 3 slots showing icon, key number, and remaining count. The selected slot is highlighted.
+- Desktop: keys 1/2/3 or mouse wheel to select, Q or left-click to use. Mobile: tap a slot to select, then tap the big "Use" button (or tap the slot again to use).
+- Gadgets: 
+  - Coin Throw: hold Q (or press and hold the Use button) to show an aim marker and arc on the floor, release to throw. Lands at the target and makes a noise there that lures guards. Max range limited and shown by the marker.
+  - Smoke Bomb: instant use at the player's feet, creates a smoke cloud for 6 seconds that blocks the guard's flashlight and vision; the guard becomes confused for 5 seconds.
+  - Noise Maker: places a device at the player's feet that makes a loud repeating noise after a 2 second delay for 8 seconds.
+  - Radar: shows guards through walls for 5 seconds, then a 20 second cooldown.
+- If the gadget count is 0, shake the slot and play an error sound ("Out of stock"). Show cooldown rings on slots that use cooldowns.
+- Gadgets bought in the shop are added to the inventory (cap per type, for example 5). Unused gadgets carry over to the next level. Save them in localStorage.
+- All gadget input goes through one input manager so it never conflicts with interact/hide keys.
+
+## ON-SCREEN HINTS
+- Context-sensitive control hints at the bottom of the screen that change by situation: near artifact "Hold E: Steal", near hiding spot "E: Hide", hidden "E: Leave", near exit "E: Escape". Different icons for desktop vs mobile.
+- First time the player sees a hiding spot or gadget in Level 1-2, show a short tutorial popup.
+
+## SMALL MISSING ITEMS TO CHECK AND ADD IF MISSING
+- Pause menu with Resume, Restart level, Settings, Quit to menu.
+- Restart button on the fail screen.
+- Volume sliders and mute that actually work.
+- Shop purchase confirmation and "not enough money" feedback.
+- Guard state icons ("?" and "!") visible from the top-down camera.
+
+## ACCEPTANCE TESTS (play-test these yourself before delivering and report the results)
+1. Walk next to a locker without pressing anything -> the player does NOT hide, prompt "E: Hide" appears.
+2. Press E -> hide. Press E again -> leave, player stands in a free spot and can move.
+3. While hidden, push the movement joystick/keys for 0.3s -> leave.
+4. Hidden, press Esc -> pause menu has "Leave hiding spot" and it works.
+5. Be seen by a chasing guard, try to hide -> blocked with a message. Break line of sight, then hide -> allowed.
+6. Hide, then throw a coin -> guard goes to the coin, player stays hidden.
+7. Buy a Smoke Bomb in the shop -> it appears in the gadget bar -> select with key 1 -> use with Q -> the count decreases.
+8. Use a gadget with count 0 -> slot shakes, no crash.
+9. Enter and exit 20 times quickly in a row -> never stuck, never duplicated.
+10. Test on desktop keyboard and on mobile touch controls.

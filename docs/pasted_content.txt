@@ -1,0 +1,91 @@
+Build a complete, polished, playable 3D stealth heist game called "Midnight Heist" for the web using Three.js (WebGL), with a TOP-DOWN, high-angle camera (about 60-70 degree tilt, looking down at the player). Playable on desktop (keyboard) and mobile (touch). Target 60 FPS on desktop and 30+ FPS on mid-range phones. Include a UI language toggle (English / Arabic with RTL support).
+
+## CONCEPT
+The player is a thief who sneaks into a museum at night to steal artifacts. A guard patrols and detects the player mainly by SOUND. The player earns money from artifacts, spends it on upgrades between levels, and each level gets harder.
+
+## CORE LOOP
+Enter museum -> sneak and steal artifacts -> return to the exit with the loot -> loot is banked as money only when the player escapes -> shop/upgrades -> next level (harder).
+If the player is caught, the loot in the bag is lost (banked money is kept) and they can retry the level. No hard game over.
+
+## CAMERA & 3D VIEW
+- Fixed high-angle top-down camera that smoothly follows the player with slight look-ahead. Mouse wheel / pinch to zoom within limits. Fixed rotation (no free camera) so controls stay intuitive.
+- Walls or objects that block the view of the player or the guards become semi-transparent/cut away automatically (occlusion fade), so the player is always visible.
+- Low-poly stylized 3D art: museum halls, display cases, statues, pedestals, paintings, lockers, curtains, tables, windows with moonlight. Placeholder primitives with good materials are fine if no model assets are available.
+- Dark night atmosphere: low ambient light, a few point/spot lights per room, real-time soft shadows, moonlight through windows, subtle fog, optional bloom and vignette. Provide a Quality setting (Low / Medium / High) that reduces shadows and post-processing on weak devices.
+
+## PLAYER CONTROLS
+- Desktop: WASD/Arrows to move (relative to the camera view). Hold Shift = sneak (slow, very quiet). Default = walk (medium noise). Dedicated Sprint key (fast, loud, uses stamina). E = interact (steal / hide / open). Q = use gadget. Esc = pause.
+- Mobile: virtual joystick (gentle push = sneak, full push = walk, plus a sprint button), Interact button, Gadget button.
+- Interaction is hold-to-confirm with a progress bar (stealing takes 1-2 seconds and makes a small noise burst).
+- Smooth acceleration/deceleration, character rotates smoothly toward movement direction, no sliding through walls, forgiving collisions.
+
+## NOISE & DETECTION SYSTEM (main mechanic)
+- Show a visible noise ring projected on the floor around the player that grows/shrinks with the action: sneak = tiny, walk = medium, sprint = large, stealing = small burst, breaking a glass case = big.
+- Floor surfaces change noise: carpet = quiet, marble/wood = louder.
+- A guard that "hears" the player within the radius becomes alert and goes to the exact spot where the noise came from.
+- Add a SHORT-RANGE flashlight cone (a real spotlight with a visible cone on the floor) as secondary detection so the player cannot walk right in front of the guard. Sound stays the primary mechanic.
+- A noise meter in the HUD shows how loud the player currently is.
+
+## GUARD AI (state machine with clear feedback)
+1. Patrol: follows a route with pauses and looking around.
+2. Suspicious: floating "?" icon above head + sound cue, walks to the noise location, looks around with the flashlight.
+3. Chase: floating "!" icon above head + sting sound, runs at the player, faster than walking.
+4. Search: lost the player, searches the last known position for 5-8 seconds, then returns to patrol.
+- Guard footsteps are positional 3D audio (louder when near, panned left/right by direction).
+- Off-screen arrow indicators at the screen edge show where a suspicious/chasing guard is.
+- Later levels: guards sometimes check hiding spots near the last heard noise.
+- Caught = guard reaches the player during chase -> caught animation, screen shake, fail screen.
+- Use pathfinding (navmesh or A* on a grid) so guards never get stuck.
+
+## HIDING
+- Hiding spots: lockers, curtains, under tables, dark corners, vents.
+- While hidden: noise = 0, the guard cannot detect the player, heartbeat sound plays when a guard is close, and the camera slightly shifts/vignettes for tension.
+- Smooth hide/unhide animation, clear prompt when near a hiding spot.
+
+## ARTIFACTS & BAG
+- 3 tiers: Common (low value, 1 bag slot), Rare (medium, 2 slots), Legendary (high value, 3 slots, in a locked glass case with a short lockpick timing mini-game; failing makes noise).
+- Artifacts are 3D objects with a subtle glow/sparkle so they are easy to spot from above.
+- Bag has limited slots. The heavier the bag, the slower the player (risk vs reward).
+- Floating "+$" text and a coin sound when collecting.
+- Money is banked only when the player reaches the exit.
+
+## LEVELS & DIFFICULTY SCALING
+- Tile/grid-based level definitions in JSON/config. 10 designed levels, then Endless Mode with generated levels.
+- Guards = 1 + floor((level-1)/2), max 6. Guard speed +4% per level, hearing radius +3% per level, more complex patrol routes.
+- Level 4+: security cameras (rotating vision cones). Level 6+: laser beams (timed on/off). Level 8+: locked doors needing a keycard.
+- Every 5th level is a Vault level with a Legendary artifact and extra security.
+- Each level has a "Dawn timer" (about 3-4 minutes). When time runs low, guards get more alert; at zero, the level fails.
+- Level 1 is a gentle in-world tutorial with on-screen prompts.
+- Level end screen: loot value, time, and star rating (1-3). Bonus for "Ghost" (never detected).
+
+## UPGRADES & SHOP (between levels, multi-tier, price increases each tier)
+- Speed, Bag capacity, Quiet Steps (smaller noise radius), Stamina, Lockpick speed, Radar (shows guards briefly through walls).
+- Gadgets (consumables): Coin throw (lures the guard to a spot), Smoke bomb (blinds the guard for 5s), Noise maker.
+- Clear shop UI with item icons, level pips, price, and preview of the effect.
+- Save progress (money, upgrades, level, settings) in localStorage, with a Continue button.
+
+## SOUND (Web Audio API with 3D positional audio, procedural/synth sounds if no assets available)
+- Ambient low museum hum, distinct footsteps per speed and surface, guard footsteps with distance and direction.
+- "?" and "!" stingers, glass break, alarm, lockpick clicks, coin pickup, cash register in shop, UI clicks.
+- Dynamic music in 3 layers: calm -> tense (guard suspicious) -> chase. Heartbeat when hiding with a guard near.
+- Start audio on first user click (browser autoplay rules). Mute toggle and separate music/SFX volume sliders.
+
+## ANIMATION & VISUAL POLISH
+- Rigged character animations for the player: idle, sneak, walk, sprint, stealing, hiding, caught. Guard: patrol, look-around, suspicious, chase. If rigged models are unavailable, use stylized procedural animation (body bob, lean, limb swing) on low-poly characters.
+- Particles: dust in the flashlight beam, glass shards, coin sparkles, smoke bomb cloud.
+- Smooth camera follow, screen shake when caught, smooth screen transitions and UI tweens.
+- Consistent stylized low-poly art direction across all assets.
+
+## SCREENS & HUD
+- Main menu (Play, Continue, Settings), level intro card, pause menu, level complete, fail screen, shop, settings.
+- HUD: money, bag slots, noise meter, dawn timer, level number, gadget slot, optional minimap (unlockable).
+- Use icons plus color (not color alone) for accessibility. Optional difficulty setting (Easy / Normal / Hard).
+
+## TECHNICAL REQUIREMENTS
+- Clean modular code (player, guard AI, noise system, camera, levels, shop, audio, UI).
+- One config file for all tuning values (speeds, radii, prices, scaling) so balancing is easy.
+- Performance: low-poly models, limited number of real-time lights and shadow casters, instancing for repeated props, asset loading screen.
+- No crashes, no softlocks, guards never get stuck.
+- Deliver a working, deployable build with a shareable link.
+
+Build it in stages: first the core playable level (3D camera, movement, noise system, one guard, stealing, hiding, exit), then the shop and upgrades, then levels/scaling, then audio and polish. Show me a playable version after the first stage.

@@ -1,0 +1,200 @@
+@font-face{font-family:Cairo;font-style:normal;font-weight:400 700;font-display:swap;src:url('/fonts/cairo-arabic.woff2') format('woff2');unicode-range:U+0600-06FF,U+0750-077F,U+0870-0891,U+0897-08E1,U+08E3-08FF,U+200C-200E,U+2010-2011,U+204F,U+2E41,U+FB50-FDFF,U+FE70-FE74,U+FE76-FEFC}@font-face{font-family:Cairo;font-style:normal;font-weight:400 700;font-display:swap;src:url('/fonts/cairo-latin.woff2') format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}*{box-sizing:border-box}html,body,#app,#game{width:100%;height:100%;margin:0;overflow:hidden}body{background:#070a14;color:#f1ead8;font-family:Cairo,system-ui,sans-serif;user-select:none}html[dir=rtl] body{font-family:Cairo,system-ui,sans-serif}#game{position:fixed;inset:0;display:block;touch-action:none}#ui{position:fixed;inset:0;pointer-events:none}.screen{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,rgba(5,8,18,.82),rgba(12,14,34,.62));pointer-events:auto}.panel{width:min(92vw,500px);padding:34px;border:1px solid rgba(230,184,74,.35);background:rgba(9,14,31,.92);box-shadow:0 18px 80px #000b;border-radius:12px;text-align:center}.title{font-size:clamp(34px,7vw,64px);letter-spacing:.12em;color:#e6b84a;text-shadow:0 0 28px #e6b84a55;margin:0 0 8px}.subtitle{color:#aeb9d5;margin:0 0 28px}.btn{display:block;width:100%;margin:10px 0;padding:13px 16px;border:1px solid #e6b84a88;border-radius:7px;background:#171d37;color:#f8e9bf;font:700 16px inherit;cursor:pointer}.btn:hover,.btn:focus{background:#293252;border-color:#e6b84a;outline:none}.btn.primary{background:#87651d;color:#fff3c6}.small{font-size:12px;color:#8792ad}.hud{position:absolute;inset:0;padding:18px;display:flex;justify-content:space-between;align-items:flex-start}.hud-left,.hud-right{display:flex;flex-direction:column;gap:9px}.chip{padding:8px 12px;border:1px solid #91a4d044;background:#0b1020cc;border-radius:7px;backdrop-filter:blur(8px);font-size:13px}.meter{width:min(220px,32vw);height:8px;border-radius:5px;background:#222a43;overflow:hidden;margin-top:4px}.fill{height:100%;transition:width .15s;background:#e6b84a}.fill.noise{background:#ff835a}.fill.stamina{background:#65d6b0}.fill.dawn{background:#8fb7ff}.center{position:absolute;left:50%;top:72%;transform:translate(-50%,-50%);text-align:center}.prompt{padding:10px 18px;border-radius:8px;background:#080c19cc;border:1px solid #b5c8f055;color:#fff}.progress{width:180px;height:5px;background:#26304d;margin:8px auto 0;border-radius:5px;overflow:hidden}.progress i{display:block;height:100%;background:#e6b84a}.toast{position:absolute;left:50%;bottom:12%;transform:translateX(-50%);padding:9px 16px;border-radius:7px;background:#0b1020dd;border:1px solid #e6b84a66;color:#f6e7b4}.hidden{display:none!important}.pause-btn{position:absolute;right:18px;top:18px;pointer-events:auto;background:#0b1020cc;color:#fff;border:1px solid #aeb9d555;border-radius:7px;padding:8px 12px}.settings{display:grid;gap:12px;text-align:start}.settings label{display:flex;justify-content:space-between;align-items:center;color:#ccd5ed}.settings select,.settings input{background:#161d36;color:#fff;border:1px solid #53648e;border-radius:5px;padding:6px}@media(max-width:600px){.hud{padding:10px;font-size:11px}.chip{padding:6px 8px}.panel{padding:24px}.title{font-size:34px}.touch{display:block!important}.touch-stick{position:absolute;left:24px;bottom:30px;width:112px;height:112px;border:2px solid #b8c6e466;border-radius:50%;pointer-events:auto}.touch-stick i{position:absolute;width:40px;height:40px;left:34px;top:34px;border-radius:50%;background:#d9e4ff66}.touch-actions{position:absolute;right:20px;bottom:30px;display:flex;gap:10px;pointer-events:auto}.touch-actions button{width:58px;height:58px;border-radius:50%;background:#0b1020bb;border:1px solid #e6b84a99;color:#fff}.desktop-help{display:none}}.touch{display:none}
+.shop-panel{width:min(94vw,680px)}
+.shop-grid{display:grid;grid-template-columns:1fr 1fr;gap:2px 22px;text-align:start;margin:14px 0}
+.shop-row{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid #2a3350}
+.small-btn{width:auto;margin:0;padding:6px 10px;font-size:12px}
+.small-btn[disabled]{opacity:.45;cursor:not-allowed}
+.money{color:#e6b84a;font-weight:700;margin:0 0 6px;font-size:18px}
+.stars{color:#e6b84a;font-size:26px;letter-spacing:.2em;margin:6px 0}
+@media(max-width:600px){.shop-grid{grid-template-columns:1fr}}
+/* ---------- minimap, off-screen guard arrows, hints, level intro, vignette ---------- */
+.minimap{position:absolute;inset-inline-end:18px;bottom:18px;width:176px;height:150px;border:1px solid rgba(230,184,74,.32);border-radius:10px;background:rgba(6,9,19,.55);box-shadow:0 10px 30px rgba(0,0,0,.55);pointer-events:none;backdrop-filter:blur(2px)}
+.offscreen{position:absolute;inset:0;overflow:hidden;pointer-events:none}
+.guard-arrow{position:absolute;color:#cfd8f5;font-size:16px;line-height:1;text-shadow:0 0 8px #000,0 0 14px #000a;opacity:.85;transition:color .2s}
+.guard-arrow.warn{color:#ffb84d;opacity:.95}
+.guard-arrow.chase{color:#ff4d5e;animation:arrowPulse .55s infinite alternate}
+@keyframes arrowPulse{from{opacity:.5;transform-origin:center}to{opacity:1}}
+.vignette{position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse at 50% 44%,transparent 42%,rgba(2,4,10,.42) 78%,rgba(1,2,6,.72) 100%)}
+.hint{position:absolute;left:50%;bottom:100px;max-width:78vw;padding:8px 16px;border-radius:20px;border:1px solid rgba(143,183,255,.32);background:rgba(8,12,25,.86);color:#dfe8ff;font-size:13px;text-align:center;opacity:0;transform:translate(-50%,8px);transition:opacity .3s,transform .3s;pointer-events:none}
+.hint.show{opacity:1;transform:translate(-50%,0)}
+.level-intro{position:absolute;left:50%;top:36%;padding:16px 38px;text-align:center;opacity:0;transform:translate(-50%,-50%) scale(.96);transition:opacity .5s,transform .5s;pointer-events:none;background:linear-gradient(90deg,transparent,rgba(9,14,31,.88) 18%,rgba(9,14,31,.88) 82%,transparent);border-block:1px solid rgba(230,184,74,.32)}
+.level-intro.show{opacity:1;transform:translate(-50%,-50%) scale(1)}
+.level-intro b{display:block;font-size:clamp(22px,4vw,38px);letter-spacing:.14em;color:#e6b84a;text-shadow:0 0 24px rgba(230,184,74,.35)}
+.level-intro span{display:block;margin-top:5px;color:#aeb9d5;font-size:13px}
+@media(max-width:600px){.minimap{width:126px;height:108px;bottom:14px;inset-inline-end:14px}.hint{bottom:132px}.level-intro{padding:12px 22px}}
+
+/* ---------- campaign HUD: the mandatory bone ---------- */
+.bone-chip{border-color:rgba(255,210,74,.45);color:#ffe9a8}
+.bone-chip.done{border-color:rgba(79,220,154,.55);color:#b8f5d6;background:rgba(18,58,43,.6)}
+.title-progress{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:0 0 16px;font-size:12px;color:#c8d2ea}
+.title-progress span{padding:5px 11px;border:1px solid rgba(145,164,208,.28);border-radius:20px;background:rgba(11,16,32,.72)}
+.complete-badge{margin:0 0 12px;padding:7px 12px;border:1px solid rgba(230,184,74,.5);border-radius:8px;background:rgba(230,184,74,.12);color:#ffe9a8;font-size:12px;letter-spacing:.16em}
+.museum-btn{background:#16273f;border-color:rgba(111,208,255,.45);color:#cfeaff}
+.btn.tiny{display:inline-block;width:auto;margin:0;padding:7px 13px;font-size:12px}
+
+/* ---------- the museum ---------- */
+.museum-screen{position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;pointer-events:auto;padding:clamp(14px,2.4vw,30px) clamp(12px,2.4vw,34px) 46px;background:radial-gradient(ellipse at 28% -12%,#1c2544 0%,#0b1020 46%,#05080f 100%);color:#eee6d2;scrollbar-color:rgba(146,164,208,.45) transparent}
+.museum-head{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:16px 22px;align-items:center;padding-bottom:14px;border-bottom:1px solid rgba(230,184,74,.22)}
+.museum-title h1{margin:2px 0 0;font-size:clamp(22px,3.4vw,34px);letter-spacing:.16em;color:#e6b84a;text-shadow:0 0 26px rgba(230,184,74,.3)}
+.museum-title .eyebrow{display:block}
+.museum-sub{margin:5px 0 0;font-size:12px;color:#93a0bd;max-width:56ch}
+.museum-progress{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+.progress-pill{display:flex;align-items:center;gap:6px;padding:6px 12px;border:1px solid rgba(146,164,208,.26);border-radius:20px;background:rgba(11,16,32,.72);font-size:10.5px;letter-spacing:.12em;color:#8c98b5;text-transform:uppercase}
+.progress-pill b{font-size:13px;letter-spacing:0;color:#f3e6c6}
+.museum-head-actions{display:flex;justify-content:flex-end}
+.museum-banner{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px;margin-top:14px;padding:10px 16px;border:1px solid rgba(79,220,154,.32);border-radius:10px;background:linear-gradient(90deg,rgba(19,58,44,.62),rgba(9,13,26,.5));color:#b8f5d6;font-size:13px}
+.museum-banner b{letter-spacing:.12em;font-size:11.5px}
+.museum-main{display:grid;grid-template-columns:minmax(0,1.12fr) minmax(0,.88fr);gap:clamp(14px,2vw,26px);margin-top:18px;align-items:start}
+
+.museum-hall,.museum-lab>.book-panel,.museum-lab{min-width:0}
+.museum-hall{padding:clamp(12px,1.6vw,20px);border:1px solid rgba(147,164,206,.18);border-radius:16px;background:linear-gradient(180deg,rgba(15,21,40,.92),rgba(9,13,26,.94));box-shadow:0 24px 70px rgba(0,0,0,.35)}
+.museum-lab{display:flex;flex-direction:column;gap:14px}
+.hall-head,.lab-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:10px}
+.hall-head h2,.lab-head h2,.book-head h2{margin:0;font-size:13.5px;letter-spacing:.16em;color:#e6b84a;text-transform:uppercase}
+.hall-head p,.lab-head p,.book-head p{margin:4px 0 0;font-size:11.5px;color:#8c98b5}
+.hall-count,.lab-badge,.book-count{align-self:flex-start;padding:4px 11px;border:1px solid rgba(230,184,74,.3);border-radius:20px;background:rgba(230,184,74,.08);color:#f3e6c6;font-size:11px;font-variant-numeric:tabular-nums;white-space:nowrap}
+.lab-head,.book-head{padding:14px 16px 10px;border:1px solid rgba(147,164,206,.18);border-radius:14px 14px 0 0;background:rgba(13,19,36,.92);margin-bottom:0}
+.museum-lab>.lab-head{margin-bottom:-14px}
+.lab-badge{background:rgba(111,208,255,.1);border-color:rgba(111,208,255,.32);color:#cfeaff;letter-spacing:.06em}
+.book-count{background:rgba(111,208,255,.1);border-color:rgba(111,208,255,.32);color:#cfeaff}
+
+.skeleton-wrap{position:relative;padding:8px 10px 0;border:1px solid rgba(120,140,190,.16);border-radius:14px;overflow:hidden;background:radial-gradient(ellipse at 50% 26%,rgba(63,80,128,.3),transparent 72%),repeating-linear-gradient(0deg,rgba(255,255,255,.022) 0 1px,transparent 1px 26px)}
+.skeleton-svg{display:block;width:100%;height:auto}
+.dino-silhouette{fill:rgba(120,140,190,.1);stroke:rgba(150,170,220,.15);stroke-width:1}
+.skeleton-baseline{stroke:rgba(230,184,74,.26);stroke-width:1.4;stroke-dasharray:4 5}
+.bone-part{opacity:.2;color:#f3e6c6;transition:opacity .45s ease,filter .25s ease}
+.bone-part:not(.on){pointer-events:none}
+.bone-part.on{cursor:pointer}
+.bone-part.on:hover,.bone-part.focus{filter:drop-shadow(0 0 7px rgba(255,210,74,.75))}
+.bone-fill{fill:currentColor;stroke:rgba(58,46,24,.55);stroke-width:1.2}
+.bone-hole{fill:rgba(9,13,26,.92);stroke:currentColor;stroke-width:1.2}
+.bone-line{fill:none;stroke:currentColor;stroke-width:3.4;stroke-linecap:round}
+.bone-joint{fill:currentColor}
+.bone-teeth,.bone-claw{fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round}
+.bone-legend{display:flex;flex-wrap:wrap;gap:5px 13px;margin-top:12px;font-size:10.5px;color:#74809e}
+.bone-legend span.on{color:#f3e6c6}
+
+.fossil-head{margin-top:24px}
+.fossil-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(94px,1fr));gap:8px}
+.fossil-tile{position:relative;display:flex;flex-direction:column;align-items:center;gap:2px;padding:9px 6px 8px;border:1px dashed rgba(140,155,195,.22);border-radius:10px;background:rgba(12,17,32,.55);color:#5c6884;font-size:10.5px;text-align:center;transition:border-color .25s,color .25s}
+.fossil-tile.collected{color:#d9c9a4;border-style:solid;border-color:rgba(230,184,74,.36);background:rgba(36,30,17,.5)}
+.fossil-tile.studied{box-shadow:inset 0 0 0 1px rgba(111,208,255,.26)}
+.fossil-tile b{font-weight:600;font-size:10.5px;line-height:1.25}
+.fossil-icon{display:block;width:34px;height:34px;margin-bottom:2px}
+.fossil-icon svg{display:block;width:100%;height:100%}
+.fossil-count{font-size:9.5px;opacity:.78}
+.stamp{position:absolute;top:4px;inset-inline-end:6px;color:#6fd0ff;font-size:10px}
+
+.specimen-list{display:flex;flex-direction:column;gap:8px;padding:14px;border:1px solid rgba(147,164,206,.18);border-inline-start:0;border-inline-end:0;background:rgba(11,16,32,.88)}
+.specimen-card{display:flex;align-items:center;gap:11px;width:100%;padding:10px 13px;border:1px solid rgba(230,184,74,.3);border-radius:10px;background:linear-gradient(90deg,rgba(40,33,18,.85),rgba(14,19,34,.85));color:#f3e6c6;font:inherit;text-align:start;cursor:pointer;transition:transform .15s,border-color .2s,background .2s}
+.specimen-card:hover,.specimen-card:focus-visible{transform:translateY(-1px);border-color:#e6b84a;background:linear-gradient(90deg,rgba(58,47,22,.9),rgba(20,27,46,.9));outline:none}
+.specimen-card.fossil{border-color:rgba(111,208,255,.3);background:linear-gradient(90deg,rgba(18,32,48,.85),rgba(14,19,34,.85))}
+.specimen-card.fossil:hover{border-color:#6fd0ff;background:linear-gradient(90deg,rgba(22,44,66,.9),rgba(20,27,46,.9))}
+.specimen-icon{display:grid;place-items:center;flex:none;width:34px;height:34px;font-size:21px;color:#e0cfa4}
+.specimen-icon svg{width:100%;height:100%}
+.specimen-body{display:flex;flex-direction:column;flex:1;min-width:0}
+.specimen-body b{font-size:13.5px;letter-spacing:.02em}
+.specimen-body small{font-size:10.5px;color:#95a1bd}
+.specimen-go{flex:none;font-size:10px;letter-spacing:.14em;color:#e6b84a}
+.specimen-card.fossil .specimen-go{color:#6fd0ff}
+.empty-lab{display:flex;flex-direction:column;align-items:center;gap:4px;padding:20px 14px;border:1px dashed rgba(111,208,255,.28);border-radius:12px;background:rgba(111,208,255,.05);color:#cfeaff;text-align:center}
+.empty-lab span{font-size:22px}
+.empty-lab p{margin:0;font-size:13px}
+.empty-lab small{color:#8c98b5;font-size:11px}
+
+.book-panel{padding:0 16px 16px;border:1px solid rgba(147,164,206,.18);border-radius:14px;background:rgba(12,17,32,.88)}
+.book-intro{margin:10px 0 12px;font-size:11.5px;color:#9aa6c2}
+.book-entries{display:flex;flex-direction:column;gap:11px;max-height:430px;overflow-y:auto;padding-inline-end:5px;scrollbar-color:rgba(146,164,208,.4) transparent}
+.book-entry{border-inline-start:2px solid rgba(230,184,74,.42);padding-inline-start:12px}
+.book-entry header{display:flex;align-items:center;gap:8px}
+.entry-icon{flex:none;font-size:17px;line-height:1}
+.entry-icon .mini-fossil{display:block;width:22px;height:22px;color:#d9c9a4}
+.entry-icon .mini-fossil svg{width:100%;height:100%}
+.entry-no{margin-inline-start:auto;font-size:10px;color:#74809e}
+.book-entry b{font-size:12.5px;color:#f3e6c6}
+.book-entry small{display:block;font-size:10px;color:#8c98b5}
+.book-entry p{margin:6px 0 0;font-size:11.5px;line-height:1.75;color:#c3cce2}
+.book-entry .entry-fact{margin-top:6px;font-size:10px;color:#e6b84a;letter-spacing:.02em}
+.book-empty{margin:4px 0;font-size:11.5px;color:#74809e;font-style:italic}
+
+.museum-footer{display:flex;gap:10px;align-items:stretch}
+.museum-footer .btn{flex:1;margin:0;font-size:14px}
+.museum-footer .btn.primary[disabled]{opacity:.38;cursor:not-allowed}
+.footer-hint{text-align:center;margin:0}
+
+/* ---------- examination overlay ---------- */
+.exam-overlay{position:absolute;inset:0;z-index:30;display:flex;align-items:flex-start;justify-content:center;padding:clamp(10px,3vh,42px) 12px;overflow-y:auto;background:rgba(3,5,12,.84);backdrop-filter:blur(7px);pointer-events:auto;animation:fadeIn .22s ease}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.exam-card{position:relative;width:min(660px,96vw);padding:22px clamp(16px,3vw,30px) 26px;border:1px solid rgba(230,184,74,.35);border-radius:16px;background:linear-gradient(180deg,#111a30,#090e1c);box-shadow:0 30px 90px rgba(0,0,0,.8);text-align:center}
+.exam-close{position:absolute;top:10px;inset-inline-end:12px;width:34px;height:34px;border-radius:50%;border:1px solid rgba(174,185,213,.35);background:rgba(11,16,32,.85);color:#dfe8ff;font-size:20px;line-height:1;cursor:pointer}
+.exam-close:hover{background:#293252}
+.exam-visual{margin:4px auto 12px;max-width:410px}
+.exam-visual .skeleton-svg{width:100%;height:auto}
+.exam-fossil-icon{width:118px;height:118px;margin:6px auto;color:#e0cfa4;filter:drop-shadow(0 6px 18px rgba(224,207,164,.25))}
+.exam-fossil-icon svg{width:100%;height:100%}
+.eyebrow{margin:0;font-size:10px;letter-spacing:.22em;color:#e6b84a;text-transform:uppercase}
+.exam-card h2{margin:6px 0 2px;font-size:clamp(20px,3vw,28px);color:#f8ecc9}
+.latin{margin:0 0 12px;font-size:12px;color:#8fa0c2;font-style:italic}
+.exam-steps{display:flex;justify-content:center;gap:6px;margin:0 0 14px;flex-wrap:wrap}
+.exam-steps span{display:flex;align-items:center;gap:6px;padding:5px 12px;border-radius:20px;border:1px solid rgba(140,155,195,.25);background:rgba(12,17,32,.7);color:#6f7c9c;font-size:10.5px;letter-spacing:.08em}
+.exam-steps span i{font-style:normal;display:grid;place-items:center;width:16px;height:16px;border-radius:50%;background:rgba(140,155,195,.2);font-size:10px}
+.exam-steps span.on{border-color:rgba(230,184,74,.55);color:#f3e6c6}
+.exam-steps span.on i{background:#e6b84a;color:#20180a}
+.exam-steps span.done{color:#9fe8c8;border-color:rgba(79,220,154,.4)}
+.exam-steps span.done i{background:#4fdc9a;color:#062b1c}
+.exam-hint{max-width:48ch;margin:0 auto 14px;font-size:12.5px;line-height:1.7;color:#aab6d2}
+.exam-data{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;margin:0 0 14px;text-align:start}
+.exam-data>div{padding:9px 12px;border:1px solid rgba(140,155,195,.2);border-radius:9px;background:rgba(12,17,32,.6)}
+.exam-data span{display:block;font-size:10px;letter-spacing:.12em;color:#8c98b5;text-transform:uppercase}
+.exam-data b{display:block;margin-top:3px;font-size:12.5px;color:#f3e6c6;font-weight:600}
+.book-preview{margin-bottom:14px;padding:12px 14px;border:1px solid rgba(230,184,74,.25);border-radius:10px;background:rgba(230,184,74,.05);text-align:start}
+.book-preview p{margin:7px 0 0;font-size:12.5px;line-height:1.8;color:#d5dcec}
+.exam-card>.btn{width:min(330px,100%);margin:0 auto}
+
+/* ---------- finale ---------- */
+.finale-panel{width:min(94vw,720px);max-height:92vh;overflow-y:auto}
+.finale-title{margin:8px 0 2px;font-size:clamp(24px,4vw,40px);letter-spacing:.1em;color:#e6b84a;text-shadow:0 0 30px rgba(230,184,74,.35)}
+.finale-skeleton{max-width:440px;margin:10px auto 4px}
+.finale-skeleton .skeleton-svg{width:100%;height:auto}
+.finale-body{max-width:56ch;margin:10px auto 4px;font-size:13px;line-height:1.9;color:#c3cce2}
+.finale-stats{display:flex;justify-content:center;gap:20px;flex-wrap:wrap;margin:14px 0 6px;font-size:10px;letter-spacing:.12em;color:#8c98b5;text-transform:uppercase}
+.finale-stats b{display:block;font-size:20px;letter-spacing:0;color:#f3e6c6}
+
+@media(max-width:900px){
+  .museum-main{grid-template-columns:1fr}
+  .museum-head{grid-template-columns:1fr}
+  .museum-progress{justify-content:flex-start}
+  .museum-head-actions{justify-content:flex-start}
+  .book-entries{max-height:360px}
+}
+@media(max-width:560px){
+  .museum-screen{padding:12px 10px 36px}
+  .museum-banner{font-size:11.5px}
+  .museum-footer{flex-direction:column}
+  .fossil-grid{grid-template-columns:repeat(auto-fill,minmax(80px,1fr))}
+  .exam-card{padding:18px 13px 22px}
+  .specimen-go{display:none}
+}
+/* ---------- lab examination: single-bone specimen ---------- */
+.exam-visual{margin:8px auto 14px;max-width:300px;min-height:170px;display:grid;place-items:center}
+.bone-detail-svg{width:100%;height:auto;display:block;filter:drop-shadow(0 10px 22px rgba(0,0,0,0.55))}
+.exam-visual.is-fossil .exam-fossil-icon{width:150px;height:150px}
+.lab-head,.book-head{background:linear-gradient(180deg,rgba(22,30,52,0.95),rgba(11,16,32,0.9))}
+.lab-badge{background:rgba(230,184,74,0.12);border-color:rgba(230,184,74,0.35);color:#ffe9a8}
+.book-count{background:rgba(230,184,74,0.12);border-color:rgba(230,184,74,0.35);color:#ffe9a8}
+.specimen-card{box-shadow:0 6px 18px rgba(0,0,0,0.25)}
+.specimen-card .specimen-icon{font-size:24px}
+.empty-lab{background:linear-gradient(180deg,rgba(111,208,255,0.08),rgba(11,16,32,0.4))}
+
+/* ---------- 3D bone viewer in the lab ---------- */
+.bone-3d-canvas{display:block;margin:0 auto;border-radius:12px;background:radial-gradient(ellipse at 50% 40%,#2a3350 0%,#0a0e1c 70%);box-shadow:inset 0 0 0 1px rgba(146,164,208,.2),0 8px 24px rgba(0,0,0,.45)}
+
+/* ---------- bone grid in hall ---------- */
+.bone-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:10px;padding:8px}
+.bone-grid .bone-3d-canvas{width:100%;height:auto}
+
+/* ---------- mountable bone slots ---------- */
+.bone-part.available{opacity:.55;cursor:pointer;stroke-dasharray:3 3}
+.bone-part.available:hover{opacity:.85;filter:drop-shadow(0 0 6px rgba(111,208,255,.7))}
+.bone-part.mounted,.bone-part.on.mounted{opacity:1}
+.bone-part.collected{opacity:.3}
